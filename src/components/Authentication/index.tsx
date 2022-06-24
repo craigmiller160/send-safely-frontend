@@ -2,12 +2,17 @@ import { createContext, PropsWithChildren, useContext } from 'react';
 import { Updater, useImmer } from 'use-immer';
 
 export interface Authentication {
+	readonly email?: string;
 	readonly apiKey?: string;
 	readonly apiSecret?: string;
 }
 
 export interface AuthenticationAndUpdater extends Authentication {
-	readonly updateAuthentication: (apiKey: string, apiSecret: string) => void;
+	readonly updateAuthentication: (
+		email: string,
+		apiKey: string,
+		apiSecret: string
+	) => void;
 }
 
 export const AuthenticationContext = createContext<AuthenticationAndUpdater>({
@@ -16,13 +21,14 @@ export const AuthenticationContext = createContext<AuthenticationAndUpdater>({
 
 export const useIsAuthenticated = () => {
 	const auth = useContext(AuthenticationContext);
-	return !!auth.apiKey && !!auth.apiSecret;
+	return !!auth.email && !!auth.apiKey && !!auth.apiSecret;
 };
 
 const createUpdateAuthentication =
 	(setState: Updater<Authentication>) =>
-	(apiKey: string, apiSecret: string) =>
+	(email: string, apiKey: string, apiSecret: string) =>
 		setState((draft) => {
+			draft.email = email;
 			draft.apiKey = apiKey;
 			draft.apiSecret = apiSecret;
 		});
