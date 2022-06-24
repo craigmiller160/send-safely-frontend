@@ -20,16 +20,30 @@ export const Login = () => {
 					name="username"
 					control={control}
 					rules={{ required: true }}
-					render={({ field }) => (
-						<TextField label="Username" {...field} />
+					render={({ field, formState: { errors } }) => (
+						<>
+							<TextField label="Username" {...field} />
+							{errors.username?.type === 'required' && (
+								<span className="error">
+									Username is required
+								</span>
+							)}
+						</>
 					)}
 				/>
 				<Controller
 					name="password"
 					control={control}
 					rules={{ required: true }}
-					render={({ field }) => (
-						<TextField label="Password" {...field} />
+					render={({ field, formState: { errors } }) => (
+						<>
+							<TextField label="Password" {...field} />
+							{errors.password?.type === 'required' && (
+								<span className="error">
+									Password is required
+								</span>
+							)}
+						</>
 					)}
 				/>
 				<Button
