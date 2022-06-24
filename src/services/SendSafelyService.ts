@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import hmacSha256 from 'crypto-js/hmac-sha256';
 import Base64 from 'crypto-js/enc-base64';
 import { Authentication } from '../components/Authentication';
+import { PackagesResponse } from '../types/sendSafely/PackagesResponse';
 
 const REQUEST_KEY_HEADER = 'ss-api-key';
 const REQUEST_TIMESTAMP_HEADER = 'ss-request-timestamp';
@@ -42,6 +43,11 @@ export const authenticate = ({
 			}
 			throw new Error(JSON.stringify(data));
 		});
+
+export const getSentPackages = (
+	authentication: Authentication
+): Promise<PackagesResponse> =>
+	baseSendSafelyRequest(authentication, '/api/v2.0/package', 'GET');
 
 const baseSendSafelyRequest = <T>(
 	authentication: Authentication,
