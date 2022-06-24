@@ -39,6 +39,7 @@ export const Login = () => {
 							<RequiredFormTextField
 								name="password"
 								label="Password"
+								type="password"
 								control={control}
 							/>
 							<Button

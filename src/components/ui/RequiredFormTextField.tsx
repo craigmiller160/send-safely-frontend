@@ -5,6 +5,7 @@ import './FieldStyles.scss';
 interface Props<T> {
 	readonly name: Path<T>;
 	readonly label: string;
+	readonly type?: string;
 	readonly control: Control<T, object>;
 }
 
@@ -15,7 +16,11 @@ export const RequiredFormTextField = <T extends object>(props: Props<T>) => (
 		rules={{ required: true }}
 		render={({ field, formState: { errors } }) => (
 			<>
-				<TextField label={props.label} {...field} />
+				<TextField
+					label={props.label}
+					type={props.type ?? 'text'}
+					{...field}
+				/>
 				{errors[props.name]?.type === 'required' && (
 					<span className="FieldError">
 						{props.label} is required
