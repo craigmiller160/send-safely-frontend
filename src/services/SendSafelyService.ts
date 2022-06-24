@@ -47,11 +47,11 @@ const baseSendSafelyRequest = <T>(
 	authentication: Authentication,
 	uri: string,
 	method: Method,
-	body: any // TODO what about GET?
+	body?: any
 ): Promise<T> => {
 	const fullUrl = `${BASE_URL}${uri}`;
 	const timestamp = generateRequestTimestamp();
-	const bodyAsString = JSON.stringify(body);
+	const bodyAsString = body ? JSON.stringify(body) : '';
 	const signature = generateRequestSignature(
 		authentication,
 		fullUrl,
