@@ -1,5 +1,6 @@
-import { Box, TextField } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
+import './Login.scss';
 
 interface LoginForm {
 	readonly username: string;
@@ -10,7 +11,10 @@ export const Login = () => {
 	const { handleSubmit, control } = useForm<LoginForm>();
 	const onSubmit = (values: LoginForm) => console.log('Values', values);
 	return (
-		<Box sx={{ flexGrow: 1 }}>
+		<Box className="Login" sx={{ flexGrow: 1 }}>
+			<Typography variant="h6">
+				Login With SendSafely Credentials
+			</Typography>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Controller
 					name="username"
@@ -20,6 +24,9 @@ export const Login = () => {
 					)}
 				/>
 				<TextField label="Password" name="username" />
+				<Button className="LoginButton" variant="contained">
+					Login
+				</Button>
 			</form>
 		</Box>
 	);
