@@ -23,7 +23,13 @@ export const Login = () => {
 						<TextField label="Username" {...field} />
 					)}
 				/>
-				<TextField label="Password" name="username" />
+				<Controller
+					name="username"
+					control={control}
+					render={({ field }) => (
+						<TextField label="Password" {...field} />
+					)}
+				/>
 				<Button className="LoginButton" variant="contained">
 					Login
 				</Button>
