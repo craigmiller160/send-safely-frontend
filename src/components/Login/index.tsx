@@ -2,8 +2,12 @@ import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import './Login.scss';
 import { RequiredFormTextField } from '../ui/RequiredFormTextField';
-import { useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import * as SendSafelyService from '../../services/SendSafelyService';
+import { SuccessAuthResponse } from '../../types/sendSafely/BaseAuthResponse';
+import { AuthenticateParams } from '../../services/SendSafelyService';
+import { useContext } from 'react';
+import { AuthenticationContext } from '../Authentication';
 
 interface LoginForm {
 	readonly username: string;
@@ -11,15 +15,23 @@ interface LoginForm {
 }
 
 export const Login = () => {
+	const authentication = useContext(AuthenticationContext);
 	const { handleSubmit, control } = useForm<LoginForm>();
-	const { refetch, error, isLoading } = useQuery(
-		['authenticate', { username: '', password: '' }],
-		SendSafelyService.authenticate,
-		{
-			enabled: false
-		}
-	);
-	const onSubmit = (values: LoginForm) => console.log('Values', values);
+	const { isLoading, error, mutate } = useMutation<
+		SuccessAuthResponse,
+		Error,
+		AuthenticateParams
+	>(SendSafelyService.authenticate);
+	const onSubmit = (values: LoginForm) =>
+		mutate(values, {
+			onSuccess: (data) =>
+				authentication.updateAuthentication(
+					data.email,
+					data.apiKey,
+					data.apiSecret
+				),
+			onError: (error) => console.error(error)
+		});
 	return (
 		<Box className="Login" sx={{ flexGrow: 1 }}>
 			<>

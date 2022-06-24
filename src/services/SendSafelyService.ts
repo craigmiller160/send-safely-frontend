@@ -9,24 +9,19 @@ const sendSafelyApi = axios.create({
 	baseURL: 'https://demo.sendsafely.com/api/v2.0'
 });
 
-interface ReactQueryKey<T> {
-	readonly queryKey: ReadonlyArray<string | T>;
-}
-
-interface AuthenticateQueryKey {
+export interface AuthenticateParams {
 	readonly username: string;
 	readonly password: string;
 }
 
 export const authenticate = ({
-	queryKey
-}: ReactQueryKey<AuthenticateQueryKey>): Promise<SuccessAuthResponse> => {
-	// TODO clean this up
-	const { username, password } = queryKey[1] as AuthenticateQueryKey;
-	return sendSafelyApi
+	username,
+	password
+}: AuthenticateParams): Promise<SuccessAuthResponse> =>
+	sendSafelyApi
 		.put<BaseAuthResponse>('/auth-api/generate-key', {
 			email: username,
-			password: password,
+			password,
 			keyDescription: 'SendSafely CLI Key (auto generated)'
 		})
 		.then((res) => res.data)
@@ -36,4 +31,3 @@ export const authenticate = ({
 			}
 			throw new Error(JSON.stringify(data));
 		});
-};
