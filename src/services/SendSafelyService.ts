@@ -98,7 +98,7 @@ const baseSendSafelyRequest = <T>(
 };
 
 export const generateRequestTimestamp = (): string =>
-	format(new Date(), "yyyy-MM-dd'T'HH:mm:ssZZZZ");
+	format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXXX");
 
 export const generateRequestSignature = (
 	authentication: Authentication,
