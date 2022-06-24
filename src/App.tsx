@@ -2,6 +2,7 @@ import React from 'react';
 import { CssBaseline } from '@mui/material';
 import { Navbar } from './components/Navbar';
 import { AuthenticationProvider } from './components/Authentication';
+import { Login } from './components/Login';
 
 function App() {
 	return (
@@ -9,7 +10,7 @@ function App() {
 			<CssBaseline />
 			<Navbar />
 			<div className="App">
-				<h1>Hello World</h1>
+				<Login />
 			</div>
 		</AuthenticationProvider>
 	);
