@@ -1,5 +1,13 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
-import { Updater, useImmer } from 'use-immer';
+import {
+	createContext,
+	Dispatch,
+	PropsWithChildren,
+	useContext,
+	useEffect,
+	useState
+} from 'react';
+
+const LS_AUTH_KEY = 'send_safely_auth';
 
 export interface Authentication {
 	readonly email?: string;
@@ -25,16 +33,29 @@ export const useIsAuthenticated = () => {
 };
 
 const createUpdateAuthentication =
-	(setState: Updater<Authentication>) =>
-	(email: string, apiKey: string, apiSecret: string) =>
-		setState((draft) => {
-			draft.email = email;
-			draft.apiKey = apiKey;
-			draft.apiSecret = apiSecret;
-		});
+	(setState: Dispatch<Authentication>) =>
+	(email: string, apiKey: string, apiSecret: string) => {
+		const auth: Authentication = {
+			email,
+			apiKey,
+			apiSecret
+		};
+		if (process.env.LOCAL_STORAGE === 'true') {
+			localStorage.setItem(LS_AUTH_KEY, JSON.stringify(auth));
+		}
+		setState(auth);
+	};
 
 export const AuthenticationProvider = (props: PropsWithChildren) => {
-	const [state, setState] = useImmer<Authentication>({});
+	const [state, setState] = useState<Authentication>({});
+	useEffect(() => {
+		if (process.env.LOCAL_STORAGE === 'true') {
+			const auth = localStorage.getItem(LS_AUTH_KEY);
+			if (auth) {
+				setState(JSON.parse(auth) as Authentication);
+			}
+		}
+	}, [setState]);
 
 	const updateAuthentication = createUpdateAuthentication(setState);
 
