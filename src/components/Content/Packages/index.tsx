@@ -6,14 +6,14 @@ import { PackagesResponse } from '../../../types/sendSafely/PackagesResponse';
 
 export const Packages = () => {
 	const authentication = useContext(AuthenticationContext);
-	const { data, error, isLoading } = useQuery<PackagesResponse>(
+	const { data, error, isLoading } = useQuery<PackagesResponse, Error>(
 		'sentPackages',
 		() => SendSafelyService.getSentPackages(authentication)
 	);
 	return (
 		<>
 			{isLoading ? 'Loading...' : ''}
-			{error ? <p>Error: {error}</p> : null}
+			{error ? <p>Error: {error.message}</p> : null}
 			{data ? <p>Data: {JSON.stringify(data, null, 2)}</p> : null}
 		</>
 	);
