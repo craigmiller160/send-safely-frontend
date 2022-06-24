@@ -1,9 +1,9 @@
 import { useMutation } from 'react-query';
-import { SuccessAuthResponse } from '../../types/sendSafely/BaseAuthResponse';
-import { AuthenticateParams } from '../../services/SendSafelyService';
-import * as SendSafelyService from '../../services/SendSafelyService';
+import { SuccessAuthResponse } from '../../../types/sendSafely/BaseAuthResponse';
+import { AuthenticateParams } from '../../../services/SendSafelyService';
+import * as SendSafelyService from '../../../services/SendSafelyService';
 import { useContext } from 'react';
-import { AuthenticationContext } from '../Authentication';
+import { AuthenticationContext } from '../../Authentication';
 
 export interface UseAuthenticateResult {
 	readonly mutationProps: {

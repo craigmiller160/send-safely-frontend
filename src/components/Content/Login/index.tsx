@@ -1,7 +1,7 @@
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import './Login.scss';
-import { RequiredFormTextField } from '../ui/RequiredFormTextField';
+import { RequiredFormTextField } from '../../ui/RequiredFormTextField';
 import { useDoAuthenticate } from './useDoAuthenticate';
 
 interface LoginForm {

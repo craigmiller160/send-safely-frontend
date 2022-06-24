@@ -2,8 +2,8 @@ import React from 'react';
 import { CssBaseline } from '@mui/material';
 import { Navbar } from './components/Navbar';
 import { AuthenticationProvider } from './components/Authentication';
-import { Login } from './components/Login';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Content } from './components/Content';
 
 const queryClient = new QueryClient();
 
@@ -13,9 +13,7 @@ function App() {
 			<AuthenticationProvider>
 				<CssBaseline />
 				<Navbar />
-				<div className="App">
-					<Login />
-				</div>
+				<Content />
 			</AuthenticationProvider>
 		</QueryClientProvider>
 	);
