@@ -6,7 +6,8 @@ import {
 } from '../types/sendSafely/BaseAuthResponse';
 
 const sendSafelyApi = axios.create({
-	baseURL: 'https://demo.sendsafely.com/api/v2.0'
+	// baseURL: 'https://demo.sendsafely.com/api/v2.0'
+	baseURL: 'https://app.sendsafely.com'
 });
 
 export interface AuthenticateParams {
