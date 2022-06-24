@@ -2,12 +2,7 @@ import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import './Login.scss';
 import { RequiredFormTextField } from '../ui/RequiredFormTextField';
-import { useMutation } from 'react-query';
-import * as SendSafelyService from '../../services/SendSafelyService';
-import { SuccessAuthResponse } from '../../types/sendSafely/BaseAuthResponse';
-import { AuthenticateParams } from '../../services/SendSafelyService';
-import { useContext } from 'react';
-import { AuthenticationContext } from '../Authentication';
+import { useDoAuthenticate } from './useDoAuthenticate';
 
 interface LoginForm {
 	readonly username: string;
@@ -15,23 +10,12 @@ interface LoginForm {
 }
 
 export const Login = () => {
-	const authentication = useContext(AuthenticationContext);
+	const {
+		doAuthenticate,
+		mutationProps: { isLoading, error }
+	} = useDoAuthenticate();
 	const { handleSubmit, control } = useForm<LoginForm>();
-	const { isLoading, error, mutate } = useMutation<
-		SuccessAuthResponse,
-		Error,
-		AuthenticateParams
-	>(SendSafelyService.authenticate);
-	const onSubmit = (values: LoginForm) =>
-		mutate(values, {
-			onSuccess: (data) =>
-				authentication.updateAuthentication(
-					data.email,
-					data.apiKey,
-					data.apiSecret
-				),
-			onError: (error) => console.error(error)
-		});
+	const onSubmit = (values: LoginForm) => doAuthenticate(values);
 	return (
 		<Box className="Login" sx={{ flexGrow: 1 }}>
 			<>
