@@ -19,18 +19,24 @@ export const Login = () => {
 				<Controller
 					name="username"
 					control={control}
+					rules={{ required: true }}
 					render={({ field }) => (
 						<TextField label="Username" {...field} />
 					)}
 				/>
 				<Controller
-					name="username"
+					name="password"
 					control={control}
+					rules={{ required: true }}
 					render={({ field }) => (
 						<TextField label="Password" {...field} />
 					)}
 				/>
-				<Button className="LoginButton" variant="contained">
+				<Button
+					className="LoginButton"
+					variant="contained"
+					type="submit"
+				>
 					Login
 				</Button>
 			</form>
