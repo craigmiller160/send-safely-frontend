@@ -40,7 +40,7 @@ const createUpdateAuthentication =
 			apiKey,
 			apiSecret
 		};
-		if (process.env.LOCAL_STORAGE === 'true') {
+		if (process.env.REACT_APP_LOCAL_STORAGE === 'true') {
 			localStorage.setItem(LS_AUTH_KEY, JSON.stringify(auth));
 		}
 		setState(auth);
@@ -49,7 +49,7 @@ const createUpdateAuthentication =
 export const AuthenticationProvider = (props: PropsWithChildren) => {
 	const [state, setState] = useState<Authentication>({});
 	useEffect(() => {
-		if (process.env.LOCAL_STORAGE === 'true') {
+		if (process.env.REACT_APP_LOCAL_STORAGE === 'true') {
 			const auth = localStorage.getItem(LS_AUTH_KEY);
 			if (auth) {
 				setState(JSON.parse(auth) as Authentication);
