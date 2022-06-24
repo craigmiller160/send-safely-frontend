@@ -4,6 +4,14 @@ import {
 	ResponseType,
 	SuccessAuthResponse
 } from '../types/sendSafely/BaseAuthResponse';
+import { format } from 'date-fns';
+import hmacSha256 from 'crypto-js/hmac-sha256';
+import Base64 from 'crypto-js/enc-base64';
+import { Authentication } from '../components/Authentication';
+
+const REQUEST_KEY_HEADER = 'ss-api-key';
+const REQUEST_TIMESTAMP_HEADER = 'ss-request-timestamp';
+const REQUEST_SIGNATURE_HEADER = 'ss-request-signature';
 
 const sendSafelyApi = axios.create({
 	// baseURL: 'https://demo.sendsafely.com/api/v2.0'
@@ -32,3 +40,17 @@ export const authenticate = ({
 			}
 			throw new Error(JSON.stringify(data));
 		});
+
+export const generateRequestTimestamp = (): string =>
+	format(new Date(), "yyyy-MM-dd'T'HH:mm:ssZZZZ");
+
+export const generateRequestSignature = (
+	authentication: Authentication,
+	urlPath: string,
+	timestamp: string,
+	requestBody: string
+): string =>
+	hmacSha256(
+		`${authentication.apiKey}${urlPath}${timestamp}${requestBody}`,
+		authentication.apiSecret!!
+	).toString(Base64);
