@@ -1,6 +1,7 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import { useForm } from 'react-hook-form';
 import './Login.scss';
+import { RequiredFormTextField } from '../ui/RequiredFormTextField';
 
 interface LoginForm {
 	readonly username: string;
@@ -16,35 +17,15 @@ export const Login = () => {
 				Login With SendSafely Credentials
 			</Typography>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<Controller
+				<RequiredFormTextField
 					name="username"
+					label="Username"
 					control={control}
-					rules={{ required: true }}
-					render={({ field, formState: { errors } }) => (
-						<>
-							<TextField label="Username" {...field} />
-							{errors.username?.type === 'required' && (
-								<span className="error">
-									Username is required
-								</span>
-							)}
-						</>
-					)}
 				/>
-				<Controller
+				<RequiredFormTextField
 					name="password"
+					label="Password"
 					control={control}
-					rules={{ required: true }}
-					render={({ field, formState: { errors } }) => (
-						<>
-							<TextField label="Password" {...field} />
-							{errors.password?.type === 'required' && (
-								<span className="error">
-									Password is required
-								</span>
-							)}
-						</>
-					)}
 				/>
 				<Button
 					className="LoginButton"
