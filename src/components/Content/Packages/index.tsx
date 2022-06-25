@@ -3,6 +3,14 @@ import { useGetPackages } from './useGetPackages';
 import { Table } from '../../ui/Table';
 import './Packages.scss';
 
+const COLUMNS = [
+	'Package ID',
+	'Sender',
+	'Timestamp',
+	'Recipients',
+	'Filenames'
+];
+
 export const Packages = () => {
 	const { data, error, isLoading } = useGetPackages();
 	return (
@@ -13,7 +21,11 @@ export const Packages = () => {
 					{error.message}
 				</Typography>
 			)}
-			{!isLoading && data && <Table data={data} />}
+			{!isLoading && data && (
+				<div className="TableWrapper">
+					<Table columns={COLUMNS} data={data} />
+				</div>
+			)}
 		</div>
 	);
 };

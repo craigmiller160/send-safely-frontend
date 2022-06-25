@@ -2,4 +2,8 @@
 
 .PackagesPage {
   @include PageRoot;
+
+  .TableWrapper {
+    width: 70%;
+  }
 }

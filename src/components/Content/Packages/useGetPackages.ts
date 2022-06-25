@@ -30,8 +30,8 @@ export const useGetPackages = (): GetPackagesResult => {
 					packageId: pkg.packageId,
 					sender: pkg.packageUserName,
 					timestamp: pkg.packageUpdateTimestamp,
-					recipients: pkg.recipients,
-					filenames: pkg.filenames
+					recipients: pkg.recipients.join(','),
+					filenames: pkg.filenames.join(',')
 				})
 			),
 		[data]
