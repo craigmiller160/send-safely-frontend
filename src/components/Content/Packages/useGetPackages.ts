@@ -1,7 +1,7 @@
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import * as DummyDataService from '../../../services/DummyDataService';
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { Authentication, AuthenticationContext } from '../../Authentication';
 import { PackageType } from './PackageType';
 import { match } from 'ts-pattern';
@@ -66,14 +66,20 @@ const createMapPackage =
 
 export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
+	const queryClient = useQueryClient();
 	const isDummyDataEnabled = useContext(DummyDataContext).isDummyDataEnabled;
-	// TODO need to force re-query when isDummyData changes
-	const { data, error, isLoading } = useQuery<
+	const queryKey = getQueryKey(packageType);
+	const { data, error, isLoading, refetch } = useQuery<
 		SendSafelyBasePackageResponse<any>,
 		Error
-	>(getQueryKey(packageType), () =>
+	>(queryKey, () =>
 		getGetPackagesFn(packageType, isDummyDataEnabled)(authentication)
 	);
+
+	useEffect(() => {
+		queryClient.invalidateQueries(queryKey).then(() => refetch());
+	}, [isDummyDataEnabled, queryKey, queryClient, refetch]);
+
 	const mapPackage = useMemo(
 		() => createMapPackage(packageType),
 		[packageType]
