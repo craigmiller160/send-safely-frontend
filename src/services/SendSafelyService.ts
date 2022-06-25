@@ -62,6 +62,11 @@ export const getSentPackages = (
 ): Promise<SendSafelyPackageResponse> =>
 	baseSendSafelyRequest(authentication, '/api/v2.0/package', 'GET');
 
+export const getReceivedPackages = (
+	authentication: Authentication
+): Promise<SendSafelyPackageResponse> =>
+	baseSendSafelyRequest(authentication, '/api/v2.0/package/received', 'GET');
+
 const baseSendSafelyRequest = <T extends SendSafelyBaseResponse>(
 	authentication: Authentication,
 	uri: string,
