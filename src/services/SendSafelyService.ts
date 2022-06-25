@@ -59,14 +59,32 @@ export const authenticate = ({
 		.then((data) => handleSendSafelyResponse<SendSafelyAuthResponse>(data));
 
 export const getSentPackages = (
-	authentication: Authentication
+	authentication: Authentication,
+	pageNumber: number = 0
 ): Promise<SendSafelySentPackageResponse> =>
-	baseSendSafelyRequest(authentication, '/api/v2.0/package', 'GET');
+	baseSendSafelyRequest(
+		authentication,
+		`/api/v2.0/package?pageNumber=${pageNumber}&pageSize=10`,
+		'GET'
+	);
 
 export const getReceivedPackages = (
-	authentication: Authentication
+	authentication: Authentication,
+	pageNumber: number = 0
 ): Promise<SendSafelyReceivedPackageResponse> =>
-	baseSendSafelyRequest(authentication, '/api/v2.0/package/received', 'GET');
+	baseSendSafelyRequest(
+		authentication,
+		`/api/v2.0/package/received?pageNumber=${pageNumber}&pageSize=10`,
+		'GET'
+	);
+
+const extractPathFromUri = (uri: string): string => {
+	const questionIndex = uri.indexOf('?');
+	if (questionIndex >= 0) {
+		return uri.substring(0, questionIndex);
+	}
+	return uri;
+};
 
 const baseSendSafelyRequest = <T extends SendSafelyBaseResponse>(
 	authentication: Authentication,
@@ -78,7 +96,7 @@ const baseSendSafelyRequest = <T extends SendSafelyBaseResponse>(
 	const bodyAsString = body ? JSON.stringify(body) : '';
 	const signature = generateRequestSignature(
 		authentication,
-		uri,
+		extractPathFromUri(uri),
 		timestamp,
 		bodyAsString
 	);
