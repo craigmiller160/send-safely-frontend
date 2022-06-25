@@ -22,7 +22,7 @@ const getTableTitle = (packageType: PackageType): string =>
 		.otherwise(() => 'Received Packages');
 
 export const PackagesTable = (props: Props) => {
-	const { data, error, isLoading } = useGetPackages();
+	const { data, error, isLoading } = useGetPackages(props.packageType);
 	const title = getTableTitle(props.packageType);
 	return (
 		<div className="PackagesTable">
