@@ -1,10 +1,14 @@
 import { useQuery } from 'react-query';
-import { SendSafelyPackageResponse } from '../../../types/sendSafely';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import { useContext, useMemo } from 'react';
 import { Authentication, AuthenticationContext } from '../../Authentication';
 import { PackageType } from './PackageType';
 import { match } from 'ts-pattern';
+import {
+	SendSafelyBasePackage,
+	SendSafelyBasePackageResponse,
+	SendSafelySentPackage
+} from '../../../types/sendSafely';
 
 interface GetPackagesResult {
 	readonly data: ReadonlyArray<ReadonlyArray<string>> | undefined;
@@ -14,7 +18,7 @@ interface GetPackagesResult {
 
 type GetPackagesFn = (
 	auth: Authentication
-) => Promise<SendSafelyPackageResponse>;
+) => Promise<SendSafelyBasePackageResponse<any>>;
 
 const getGetPackagesFn = (packageType: PackageType): GetPackagesFn =>
 	match(packageType)
@@ -23,30 +27,43 @@ const getGetPackagesFn = (packageType: PackageType): GetPackagesFn =>
 
 const getQueryKey = (packageType: PackageType): string =>
 	match(packageType)
-		.with(PackageType.SENT, () => 'sendPackages')
+		.with(PackageType.SENT, () => 'sentPackages')
 		.otherwise(() => 'receivedPackages');
+
+const createMapPackage =
+	(packageType: PackageType) =>
+	(pkg: SendSafelyBasePackage): ReadonlyArray<string> => {
+		const baseArray = [
+			pkg.packageId,
+			pkg.packageUserName,
+			pkg.packageUpdateTimestamp,
+			pkg.filenames.join(',')
+		];
+		if (packageType === PackageType.SENT) {
+			return [
+				...baseArray,
+				(pkg as SendSafelySentPackage).recipients.join(',')
+			];
+		}
+		return baseArray;
+	};
 
 export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
 	const { data, error, isLoading } = useQuery<
-		SendSafelyPackageResponse,
+		SendSafelyBasePackageResponse<any>,
 		Error
 	>(getQueryKey(packageType), () =>
 		getGetPackagesFn(packageType)(authentication)
 	);
+	const mapPackage = useMemo(
+		() => createMapPackage(packageType),
+		[packageType]
+	);
 
 	const formattedData = useMemo(
-		() =>
-			data?.packages?.map(
-				(pkg): ReadonlyArray<string> => [
-					pkg.packageId,
-					pkg.packageUserName,
-					pkg.packageUpdateTimestamp,
-					pkg.recipients.join(','),
-					pkg.filenames.join(',')
-				]
-			),
-		[data]
+		() => data?.packages?.map(mapPackage),
+		[data, mapPackage]
 	);
 	return {
 		data: formattedData,

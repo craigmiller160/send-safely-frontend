@@ -25,23 +25,26 @@ export interface SendSafelyErrorResponse extends SendSafelyBaseResponse {
 	readonly message: string;
 }
 
-export interface SendSafelyReceivedPackage {
+export interface SendSafelyBasePackage {
 	readonly packageId: string;
 	readonly packageUserName: string;
 	readonly packageUpdateTimestamp: string;
 	readonly filenames: ReadonlyArray<string>;
 }
 
-export interface SendSafelySentPackage extends SendSafelyReceivedPackage {
+export interface SendSafelyReceivedPackage extends SendSafelyBasePackage {}
+
+export interface SendSafelySentPackage extends SendSafelyBasePackage {
 	readonly recipients: ReadonlyArray<string>;
 }
 
-export interface SendSafelyReceivedPackageResponse
+export interface SendSafelyBasePackageResponse<T extends SendSafelyBasePackage>
 	extends SendSafelySuccessResponse {
-	readonly packages: ReadonlyArray<SendSafelyReceivedPackage>;
+	readonly packages: ReadonlyArray<T>;
 }
 
+export interface SendSafelyReceivedPackageResponse
+	extends SendSafelyBasePackageResponse<SendSafelyReceivedPackage> {}
+
 export interface SendSafelySentPackageResponse
-	extends SendSafelySuccessResponse {
-	readonly packages: ReadonlyArray<SendSafelySentPackage>;
-}
+	extends SendSafelyBasePackageResponse<SendSafelySentPackage> {}
