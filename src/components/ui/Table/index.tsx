@@ -1,18 +1,20 @@
 import {
 	Paper,
 	Table as MuiTable,
+	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
 	TableRow
 } from '@mui/material';
 
-interface Props<T extends object> {
+interface Props {
 	readonly columns: ReadonlyArray<string>;
-	readonly data: ReadonlyArray<T>;
+	readonly data: ReadonlyArray<ReadonlyArray<string>>;
+	readonly rowKeyDataIndex: number;
 }
 
-export const Table = <T extends object>(props: Props<T>) => {
+export const Table = (props: Props) => {
 	return (
 		<TableContainer component={Paper}>
 			<MuiTable sx={{ minWidth: 650 }}>
@@ -23,6 +25,15 @@ export const Table = <T extends object>(props: Props<T>) => {
 						))}
 					</TableRow>
 				</TableHead>
+				<TableBody>
+					{props.data.map((record) => (
+						<TableRow key={`${record[props.rowKeyDataIndex]}`}>
+							{record.map((value) => (
+								<TableCell key={value}>{value}</TableCell>
+							))}
+						</TableRow>
+					))}
+				</TableBody>
 			</MuiTable>
 		</TableContainer>
 	);

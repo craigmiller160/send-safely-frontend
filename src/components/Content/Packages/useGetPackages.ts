@@ -3,10 +3,9 @@ import { SendSafelyPackageResponse } from '../../../types/sendSafely';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import { useContext, useMemo } from 'react';
 import { AuthenticationContext } from '../../Authentication';
-import { PackageTableRecord } from '../../../types/PackageTableRecord';
 
 interface GetPackagesResult {
-	readonly data: ReadonlyArray<PackageTableRecord> | undefined;
+	readonly data: ReadonlyArray<ReadonlyArray<string>> | undefined;
 	readonly error: Error | null;
 	readonly isLoading: boolean;
 }
@@ -26,13 +25,13 @@ export const useGetPackages = (): GetPackagesResult => {
 	const formattedData = useMemo(
 		() =>
 			data?.packages?.map(
-				(pkg): PackageTableRecord => ({
-					packageId: pkg.packageId,
-					sender: pkg.packageUserName,
-					timestamp: pkg.packageUpdateTimestamp,
-					recipients: pkg.recipients.join(','),
-					filenames: pkg.filenames.join(',')
-				})
+				(pkg): ReadonlyArray<string> => [
+					pkg.packageId,
+					pkg.packageUserName,
+					pkg.packageUpdateTimestamp,
+					pkg.recipients.join(','),
+					pkg.filenames.join(',')
+				]
 			),
 		[data]
 	);

@@ -23,7 +23,7 @@ export const Packages = () => {
 			)}
 			{!isLoading && data && (
 				<div className="TableWrapper">
-					<Table columns={COLUMNS} data={data} />
+					<Table columns={COLUMNS} data={data} rowKeyDataIndex={0} />
 				</div>
 			)}
 		</div>
