@@ -27,6 +27,7 @@ export interface SendSafelyErrorResponse extends SendSafelyBaseResponse {
 
 export interface SendSafelyPackage {
 	readonly packageId: string;
+	readonly packageUserName: string;
 	readonly packageUpdateTimestamp: string;
 	readonly recipients: ReadonlyArray<string>;
 	readonly filenames: ReadonlyArray<string>;
