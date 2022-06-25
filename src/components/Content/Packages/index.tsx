@@ -2,14 +2,14 @@ import { useContext } from 'react';
 import { AuthenticationContext } from '../../Authentication';
 import { useQuery } from 'react-query';
 import * as SendSafelyService from '../../../services/SendSafelyService';
-import { PackagesResponse } from '../../../types/sendSafely/PackagesResponse';
+import { SendSafelyPackageResponse } from '../../../types/sendSafely';
 
 export const Packages = () => {
 	const authentication = useContext(AuthenticationContext);
-	const { data, error, isLoading } = useQuery<PackagesResponse, Error>(
-		'sentPackages',
-		() => SendSafelyService.getSentPackages(authentication)
-	);
+	const { data, error, isLoading } = useQuery<
+		SendSafelyPackageResponse,
+		Error
+	>('sentPackages', () => SendSafelyService.getSentPackages(authentication));
 	return (
 		<>
 			{isLoading ? 'Loading...' : ''}

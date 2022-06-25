@@ -1,14 +1,14 @@
 import axios, { AxiosRequestHeaders } from 'axios';
-import {
-	BaseAuthResponse,
-	ResponseType,
-	SuccessAuthResponse
-} from '../types/sendSafely/BaseAuthResponse';
 import { format } from 'date-fns';
 import hmacSha256 from 'crypto-js/hmac-sha256';
 import Hex from 'crypto-js/enc-hex';
 import { Authentication } from '../components/Authentication';
-import { PackagesResponse } from '../types/sendSafely/PackagesResponse';
+import {
+	SendSafelyAuthResponse,
+	SendSafelyBaseResponse,
+	SendSafelyPackageResponse,
+	SendSafelyResponseType
+} from '../types/sendSafely';
 
 const REQUEST_KEY_HEADER = 'ss-api-key';
 const REQUEST_TIMESTAMP_HEADER = 'ss-request-timestamp';
@@ -29,24 +29,24 @@ export interface AuthenticateParams {
 export const authenticate = ({
 	username,
 	password
-}: AuthenticateParams): Promise<SuccessAuthResponse> =>
+}: AuthenticateParams): Promise<SendSafelyAuthResponse> =>
 	sendSafelyApi
-		.put<BaseAuthResponse>('/auth-api/generate-key', {
+		.put<SendSafelyBaseResponse>('/auth-api/generate-key', {
 			email: username,
 			password,
 			keyDescription: 'SendSafely CLI Key (auto generated)'
 		})
 		.then((res) => res.data)
 		.then((data) => {
-			if (data.response === ResponseType.SUCCESS) {
-				return data as SuccessAuthResponse;
+			if (data.response === SendSafelyResponseType.SUCCESS) {
+				return data as SendSafelyAuthResponse;
 			}
-			throw new Error(JSON.stringify(data));
+			return Promise.reject(new Error(JSON.stringify(data)));
 		});
 
 export const getSentPackages = (
 	authentication: Authentication
-): Promise<PackagesResponse> =>
+): Promise<SendSafelyPackageResponse> =>
 	baseSendSafelyRequest(authentication, '/api/v2.0/package', 'GET');
 
 const baseSendSafelyRequest = <T>(
