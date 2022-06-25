@@ -19,7 +19,8 @@ interface GetPackagesResult {
 }
 
 type GetPackagesFn = (
-	auth: Authentication
+	auth: Authentication,
+	page: number
 ) => Promise<SendSafelyBasePackageResponse<any>>;
 
 const getGetPackagesFn = (
@@ -64,7 +65,10 @@ const createMapPackage =
 		return baseArray;
 	};
 
-export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
+export const useGetPackages = (
+	packageType: PackageType,
+	page: number
+): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
 	const queryClient = useQueryClient();
 	const isDummyDataEnabled = useContext(DummyDataContext).isDummyDataEnabled;
@@ -73,8 +77,12 @@ export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
 		SendSafelyBasePackageResponse<any>,
 		Error
 	>(
-		queryKey,
-		() => getGetPackagesFn(packageType, isDummyDataEnabled)(authentication),
+		[queryKey, page],
+		() =>
+			getGetPackagesFn(packageType, isDummyDataEnabled)(
+				authentication,
+				page
+			),
 		{
 			keepPreviousData: true
 		}
