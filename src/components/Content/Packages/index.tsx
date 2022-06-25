@@ -3,6 +3,7 @@ import { AuthenticationContext } from '../../Authentication';
 import { useQuery } from 'react-query';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import { SendSafelyPackageResponse } from '../../../types/sendSafely';
+import { CircularProgress, Typography } from '@mui/material';
 
 export const Packages = () => {
 	const authentication = useContext(AuthenticationContext);
@@ -17,8 +18,12 @@ export const Packages = () => {
 	});
 	return (
 		<>
-			{isLoading ? 'Loading...' : ''}
-			{error ? <p>Error: {error.message}</p> : null}
+			{isLoading && <CircularProgress />}
+			{!isLoading && error && (
+				<Typography style={{ color: 'red' }} variant="h4">
+					{error.message}
+				</Typography>
+			)}
 			{data ? <p>Data: {JSON.stringify(data, null, 2)}</p> : null}
 		</>
 	);
