@@ -16,8 +16,8 @@ interface Props {
 
 export const Table = (props: Props) => {
 	return (
-		<TableContainer component={Paper}>
-			<MuiTable sx={{ minWidth: 650 }}>
+		<TableContainer component={Paper} sx={{ maxHeight: 300 }}>
+			<MuiTable sx={{ minWidth: 650 }} stickyHeader>
 				<TableHead>
 					<TableRow>
 						{props.columns.map((col) => (
