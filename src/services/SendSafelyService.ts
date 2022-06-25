@@ -6,7 +6,7 @@ import {
 } from '../types/sendSafely/BaseAuthResponse';
 import { format } from 'date-fns';
 import hmacSha256 from 'crypto-js/hmac-sha256';
-import Base64 from 'crypto-js/enc-base64';
+import Hex from 'crypto-js/enc-hex';
 import { Authentication } from '../components/Authentication';
 import { PackagesResponse } from '../types/sendSafely/PackagesResponse';
 
@@ -55,12 +55,11 @@ const baseSendSafelyRequest = <T>(
 	method: Method,
 	body?: any
 ): Promise<T> => {
-	const fullUrl = `${BASE_URL}${uri}`;
 	const timestamp = generateRequestTimestamp();
 	const bodyAsString = body ? JSON.stringify(body) : '';
 	const signature = generateRequestSignature(
 		authentication,
-		fullUrl,
+		uri,
 		timestamp,
 		bodyAsString
 	);
@@ -109,4 +108,4 @@ export const generateRequestSignature = (
 	hmacSha256(
 		`${authentication.apiKey}${urlPath}${timestamp}${requestBody}`,
 		authentication.apiSecret!!
-	).toString(Base64);
+	).toString(Hex);
