@@ -7,8 +7,9 @@ import {
 	SendSafelyAuthResponse,
 	SendSafelyBaseResponse,
 	SendSafelyErrorResponse,
-	SendSafelyPackageResponse,
-	SendSafelyResponseType
+	SendSafelyReceivedPackageResponse,
+	SendSafelyResponseType,
+	SendSafelySentPackageResponse
 } from '../types/sendSafely';
 
 const REQUEST_KEY_HEADER = 'ss-api-key';
@@ -59,12 +60,12 @@ export const authenticate = ({
 
 export const getSentPackages = (
 	authentication: Authentication
-): Promise<SendSafelyPackageResponse> =>
+): Promise<SendSafelySentPackageResponse> =>
 	baseSendSafelyRequest(authentication, '/api/v2.0/package', 'GET');
 
 export const getReceivedPackages = (
 	authentication: Authentication
-): Promise<SendSafelyPackageResponse> =>
+): Promise<SendSafelyReceivedPackageResponse> =>
 	baseSendSafelyRequest(authentication, '/api/v2.0/package/received', 'GET');
 
 const baseSendSafelyRequest = <T extends SendSafelyBaseResponse>(
