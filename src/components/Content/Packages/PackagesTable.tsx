@@ -8,7 +8,8 @@ import { DummyDataContext } from '../../DummyData';
 import { useImmer } from 'use-immer';
 
 const BASE_COLUMNS = ['Package ID', 'Sender', 'Timestamp', 'Filenames'];
-const SENT_COLUMNS = [...BASE_COLUMNS, 'Recipients'];
+const RECEIVED_COLUMNS = [...BASE_COLUMNS];
+const SENT_COLUMNS = [...BASE_COLUMNS, 'Recipients', 'Actions'];
 
 interface Props {
 	readonly packageType: PackageType;
@@ -22,7 +23,7 @@ const getTableTitle = (packageType: PackageType): string =>
 const getColumns = (packageType: PackageType): ReadonlyArray<string> =>
 	match(packageType)
 		.with(PackageType.SENT, () => SENT_COLUMNS)
-		.otherwise(() => BASE_COLUMNS);
+		.otherwise(() => RECEIVED_COLUMNS);
 
 interface State {
 	readonly page: number;

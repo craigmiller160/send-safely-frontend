@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from 'react-query';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import * as DummyDataService from '../../../services/DummyDataService';
-import { useContext, useEffect, useMemo } from 'react';
+import { ReactNode, useCallback, useContext, useEffect, useMemo } from 'react';
 import { Authentication, AuthenticationContext } from '../../Authentication';
 import { PackageType } from './PackageType';
 import { match } from 'ts-pattern';
@@ -11,9 +11,10 @@ import {
 	SendSafelySentPackage
 } from '../../../types/sendSafely';
 import { DummyDataContext } from '../../DummyData';
+import { Button } from '@mui/material';
 
 interface GetPackagesResult {
-	readonly data: ReadonlyArray<ReadonlyArray<string>> | undefined;
+	readonly data: ReadonlyArray<ReadonlyArray<string | ReactNode>> | undefined;
 	readonly error: Error | null;
 	readonly isLoading: boolean;
 }
@@ -48,18 +49,32 @@ const getQueryKey = (packageType: PackageType): string =>
 		.otherwise(() => 'receivedPackages');
 
 const createMapPackage =
-	(packageType: PackageType) =>
-	(pkg: SendSafelyBasePackage): ReadonlyArray<string> => {
+	(
+		packageType: PackageType,
+		authentication: Authentication,
+		invalidateAndRefetch: () => void
+	) =>
+	(pkg: SendSafelyBasePackage): ReadonlyArray<string | ReactNode> => {
 		const baseArray = [
 			pkg.packageId,
 			pkg.packageUserName,
 			pkg.packageUpdateTimestamp,
 			pkg.filenames.join(',')
 		];
+
 		if (packageType === PackageType.SENT) {
+			const doDelete = () => {
+				SendSafelyService.deletePackage(
+					authentication,
+					pkg.packageId
+				).then(() => invalidateAndRefetch());
+			};
+
+			const DeleteButton = <Button onClick={doDelete}>Delete</Button>;
 			return [
 				...baseArray,
-				(pkg as SendSafelySentPackage).recipients.join(',')
+				(pkg as SendSafelySentPackage).recipients.join(','),
+				DeleteButton
 			];
 		}
 		return baseArray;
@@ -88,13 +103,19 @@ export const useGetPackages = (
 		}
 	);
 
+	const invalidateAndRefetch = useCallback(
+		() => queryClient.invalidateQueries(queryKey).then(() => refetch()),
+		[queryClient, queryKey, refetch]
+	);
+
 	useEffect(() => {
-		queryClient.invalidateQueries(queryKey).then(() => refetch());
-	}, [isDummyDataEnabled, queryKey, queryClient, refetch]);
+		invalidateAndRefetch();
+	}, [isDummyDataEnabled, invalidateAndRefetch]);
 
 	const mapPackage = useMemo(
-		() => createMapPackage(packageType),
-		[packageType]
+		() =>
+			createMapPackage(packageType, authentication, invalidateAndRefetch),
+		[packageType, invalidateAndRefetch, authentication]
 	);
 
 	const formattedData = useMemo(
