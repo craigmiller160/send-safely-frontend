@@ -1,9 +1,9 @@
 import { useMutation } from 'react-query';
-import { SuccessAuthResponse } from '../../../types/sendSafely/BaseAuthResponse';
 import { AuthenticateParams } from '../../../services/SendSafelyService';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import { useContext } from 'react';
 import { AuthenticationContext } from '../../Authentication';
+import { SendSafelyAuthResponse } from '../../../types/sendSafely';
 
 export interface UseAuthenticateResult {
 	readonly mutationProps: {
@@ -16,7 +16,7 @@ export interface UseAuthenticateResult {
 export const useDoAuthenticate = (): UseAuthenticateResult => {
 	const authentication = useContext(AuthenticationContext);
 	const { isLoading, error, mutate } = useMutation<
-		SuccessAuthResponse,
+		SendSafelyAuthResponse,
 		Error,
 		AuthenticateParams
 	>(SendSafelyService.authenticate);
