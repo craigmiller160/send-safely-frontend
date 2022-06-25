@@ -9,7 +9,8 @@ import {
 	SendSafelyErrorResponse,
 	SendSafelyReceivedPackageResponse,
 	SendSafelyResponseType,
-	SendSafelySentPackageResponse
+	SendSafelySentPackageResponse,
+	SendSafelySuccessResponse
 } from '../types/sendSafely';
 
 const REQUEST_KEY_HEADER = 'ss-api-key';
@@ -76,6 +77,16 @@ export const getReceivedPackages = (
 		authentication,
 		`/api/v2.0/package/received?pageNumber=${pageNumber}&pageSize=10`,
 		'GET'
+	);
+
+export const deletePackage = (
+	authentication: Authentication,
+	packageId: string
+): Promise<SendSafelySuccessResponse> =>
+	baseSendSafelyRequest(
+		authentication,
+		`/api/v2.0/package/${packageId}`,
+		'DELETE'
 	);
 
 const extractPathFromUri = (uri: string): string => {
