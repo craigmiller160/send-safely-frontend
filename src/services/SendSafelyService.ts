@@ -6,6 +6,7 @@ import { Authentication } from '../components/Authentication';
 import {
 	SendSafelyAuthResponse,
 	SendSafelyBaseResponse,
+	SendSafelyErrorResponse,
 	SendSafelyPackageResponse,
 	SendSafelyResponseType
 } from '../types/sendSafely';
@@ -28,13 +29,20 @@ export interface AuthenticateParams {
 	readonly password: string;
 }
 
+const createSendSafelyErrorMessage = (error: SendSafelyErrorResponse): string =>
+	`Error: ${error.response}: ${error.message}`;
+
 const handleSendSafelyResponse = <T extends SendSafelyBaseResponse>(
 	res: AxiosResponse<SendSafelyBaseResponse>
 ): Promise<T> => {
 	if (res.data.response === SendSafelyResponseType.SUCCESS) {
 		return Promise.resolve(res.data as T);
 	}
-	return Promise.reject(new Error(JSON.stringify(res.data)));
+	return Promise.reject(
+		new Error(
+			createSendSafelyErrorMessage(res.data as SendSafelyErrorResponse)
+		)
+	);
 };
 
 export const authenticate = ({
