@@ -1,8 +1,7 @@
+@import "../../../styles/page";
+
 .Login {
-  margin: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include PageRoot;
 
   form {
     display: flex;

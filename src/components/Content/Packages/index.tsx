@@ -17,7 +17,7 @@ export const Packages = () => {
 		refetchOnReconnect: false
 	});
 	return (
-		<>
+		<div className="PackagesPage">
 			{isLoading && <CircularProgress />}
 			{!isLoading && error && (
 				<Typography style={{ color: 'red' }} variant="h4">
@@ -25,6 +25,6 @@ export const Packages = () => {
 				</Typography>
 			)}
 			{data ? <p>Data: {JSON.stringify(data, null, 2)}</p> : null}
-		</>
+		</div>
 	);
 };
