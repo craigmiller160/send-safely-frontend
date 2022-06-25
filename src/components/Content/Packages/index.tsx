@@ -15,6 +15,7 @@ export const Packages = () => {
 	const { data, error, isLoading } = useGetPackages();
 	return (
 		<div className="PackagesPage">
+			<Typography variant="h6">Sent Packages</Typography>
 			{isLoading && <CircularProgress />}
 			{!isLoading && error && (
 				<Typography style={{ color: 'red' }} variant="h4">
