@@ -13,12 +13,14 @@ import {
 const REQUEST_KEY_HEADER = 'ss-api-key';
 const REQUEST_TIMESTAMP_HEADER = 'ss-request-timestamp';
 const REQUEST_SIGNATURE_HEADER = 'ss-request-signature';
-const BASE_URL = 'https://app.sendsafely.com';
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-const sendSafelyApi = axios.create({
-	// baseURL: 'https://demo.sendsafely.com/api/v2.0'
-	baseURL: BASE_URL
+const sendSafelyAuthApi = axios.create({
+	baseURL: 'https://app.sendsafely.com'
+});
+
+const sendSafelyDemoApi = axios.create({
+	baseURL: 'https://demo.sendsafely.com'
 });
 
 export interface AuthenticateParams {
@@ -39,7 +41,7 @@ export const authenticate = ({
 	username,
 	password
 }: AuthenticateParams): Promise<SendSafelyAuthResponse> =>
-	sendSafelyApi
+	sendSafelyAuthApi
 		.put<SendSafelyBaseResponse>('/auth-api/generate-key', {
 			email: username,
 			password,
@@ -73,25 +75,25 @@ const baseSendSafelyRequest = <T extends SendSafelyBaseResponse>(
 	};
 	switch (method) {
 		case 'GET':
-			return sendSafelyApi
+			return sendSafelyDemoApi
 				.get<T>(uri, {
 					headers
 				})
 				.then((data) => handleSendSafelyResponse<T>(data));
 		case 'POST':
-			return sendSafelyApi
+			return sendSafelyDemoApi
 				.post<T>(uri, body, {
 					headers
 				})
 				.then((data) => handleSendSafelyResponse<T>(data));
 		case 'PUT':
-			return sendSafelyApi
+			return sendSafelyDemoApi
 				.put<T>(uri, body, {
 					headers
 				})
 				.then((data) => handleSendSafelyResponse<T>(data));
 		case 'DELETE':
-			return sendSafelyApi
+			return sendSafelyDemoApi
 				.delete<T>(uri, {
 					headers
 				})
