@@ -72,8 +72,12 @@ export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
 	const { data, error, isLoading, refetch } = useQuery<
 		SendSafelyBasePackageResponse<any>,
 		Error
-	>(queryKey, () =>
-		getGetPackagesFn(packageType, isDummyDataEnabled)(authentication)
+	>(
+		queryKey,
+		() => getGetPackagesFn(packageType, isDummyDataEnabled)(authentication),
+		{
+			keepPreviousData: true
+		}
 	);
 
 	useEffect(() => {
