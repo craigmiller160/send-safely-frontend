@@ -1,5 +1,6 @@
 import { useQuery } from 'react-query';
 import * as SendSafelyService from '../../../services/SendSafelyService';
+import * as DummyDataService from '../../../services/DummyDataService';
 import { useContext, useMemo } from 'react';
 import { Authentication, AuthenticationContext } from '../../Authentication';
 import { PackageType } from './PackageType';
@@ -9,6 +10,7 @@ import {
 	SendSafelyBasePackageResponse,
 	SendSafelySentPackage
 } from '../../../types/sendSafely';
+import { DummyDataContext } from '../../DummyData';
 
 interface GetPackagesResult {
 	readonly data: ReadonlyArray<ReadonlyArray<string>> | undefined;
@@ -20,9 +22,23 @@ type GetPackagesFn = (
 	auth: Authentication
 ) => Promise<SendSafelyBasePackageResponse<any>>;
 
-const getGetPackagesFn = (packageType: PackageType): GetPackagesFn =>
-	match(packageType)
-		.with(PackageType.SENT, () => SendSafelyService.getSentPackages)
+const getGetPackagesFn = (
+	packageType: PackageType,
+	isDummyDataEnabled: boolean
+): GetPackagesFn =>
+	match({ packageType, isDummyDataEnabled })
+		.with(
+			{ packageType: PackageType.SENT, isDummyDataEnabled: true },
+			() => DummyDataService.getSentPackages
+		)
+		.with(
+			{ packageType: PackageType.RECEIVED, isDummyDataEnabled: true },
+			() => DummyDataService.getReceivedPackages
+		)
+		.with(
+			{ packageType: PackageType.SENT },
+			() => SendSafelyService.getSentPackages
+		)
 		.otherwise(() => SendSafelyService.getReceivedPackages);
 
 const getQueryKey = (packageType: PackageType): string =>
@@ -50,11 +66,13 @@ const createMapPackage =
 
 export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
+	const isDummyDataEnabled = useContext(DummyDataContext).isDummyDataEnabled;
+	// TODO need to force re-query when isDummyData changes
 	const { data, error, isLoading } = useQuery<
 		SendSafelyBasePackageResponse<any>,
 		Error
 	>(getQueryKey(packageType), () =>
-		getGetPackagesFn(packageType)(authentication)
+		getGetPackagesFn(packageType, isDummyDataEnabled)(authentication)
 	);
 	const mapPackage = useMemo(
 		() => createMapPackage(packageType),
