@@ -1,5 +1,3 @@
-import { Package } from './PackagesResponse';
-
 export enum SendSafelyResponseType {
 	SUCCESS = 'SUCCESS',
 	AUTHENTICATION_FAILED = 'AUTHENTICATION_FAILED'
@@ -35,5 +33,5 @@ export interface SendSafelyPackage {
 }
 
 export interface SendSafelyPackageResponse extends SendSafelySuccessResponse {
-	readonly packages: ReadonlyArray<Package>;
+	readonly packages: ReadonlyArray<SendSafelyPackage>;
 }
