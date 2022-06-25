@@ -1,4 +1,4 @@
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { format } from 'date-fns';
 import hmacSha256 from 'crypto-js/hmac-sha256';
 import Hex from 'crypto-js/enc-hex';
@@ -26,6 +26,15 @@ export interface AuthenticateParams {
 	readonly password: string;
 }
 
+const handleSendSafelyResponse = <T extends SendSafelyBaseResponse>(
+	res: AxiosResponse<SendSafelyBaseResponse>
+): Promise<T> => {
+	if (res.data.response === SendSafelyResponseType.SUCCESS) {
+		return Promise.resolve(res.data as T);
+	}
+	return Promise.reject(new Error(JSON.stringify(res.data)));
+};
+
 export const authenticate = ({
 	username,
 	password
@@ -36,20 +45,14 @@ export const authenticate = ({
 			password,
 			keyDescription: 'SendSafely CLI Key (auto generated)'
 		})
-		.then((res) => res.data)
-		.then((data) => {
-			if (data.response === SendSafelyResponseType.SUCCESS) {
-				return data as SendSafelyAuthResponse;
-			}
-			return Promise.reject(new Error(JSON.stringify(data)));
-		});
+		.then((data) => handleSendSafelyResponse<SendSafelyAuthResponse>(data));
 
 export const getSentPackages = (
 	authentication: Authentication
 ): Promise<SendSafelyPackageResponse> =>
 	baseSendSafelyRequest(authentication, '/api/v2.0/package', 'GET');
 
-const baseSendSafelyRequest = <T>(
+const baseSendSafelyRequest = <T extends SendSafelyBaseResponse>(
 	authentication: Authentication,
 	uri: string,
 	method: Method,
@@ -74,25 +77,25 @@ const baseSendSafelyRequest = <T>(
 				.get<T>(uri, {
 					headers
 				})
-				.then((res) => res.data);
+				.then((data) => handleSendSafelyResponse<T>(data));
 		case 'POST':
 			return sendSafelyApi
 				.post<T>(uri, body, {
 					headers
 				})
-				.then((res) => res.data);
+				.then((data) => handleSendSafelyResponse<T>(data));
 		case 'PUT':
 			return sendSafelyApi
 				.put<T>(uri, body, {
 					headers
 				})
-				.then((res) => res.data);
+				.then((data) => handleSendSafelyResponse<T>(data));
 		case 'DELETE':
 			return sendSafelyApi
 				.delete<T>(uri, {
 					headers
 				})
-				.then((res) => res.data);
+				.then((data) => handleSendSafelyResponse<T>(data));
 	}
 };
 
