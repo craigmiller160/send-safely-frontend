@@ -7,11 +7,11 @@ import {
 	TableHead,
 	TableRow
 } from '@mui/material';
-import { UIEvent } from 'react';
+import { ReactNode, UIEvent } from 'react';
 
 interface Props {
 	readonly columns: ReadonlyArray<string>;
-	readonly data: ReadonlyArray<ReadonlyArray<string>>;
+	readonly data: ReadonlyArray<ReadonlyArray<string | ReactNode>>;
 	readonly rowKeyDataIndex: number;
 	readonly nextPage: () => void;
 }
@@ -47,11 +47,16 @@ export const Table = (props: Props) => {
 				<TableBody>
 					{props.data.map((record) => (
 						<TableRow key={`${record[props.rowKeyDataIndex]}`}>
-							{record.map((value, index) => (
-								<TableCell key={`${value}${index}`}>
-									{value}
-								</TableCell>
-							))}
+							{record.map((value, index) => {
+								if (typeof value === 'string') {
+									return (
+										<TableCell key={`${value}${index}`}>
+											{value}
+										</TableCell>
+									);
+								}
+								return value;
+							})}
 						</TableRow>
 					))}
 				</TableBody>
