@@ -5,7 +5,7 @@ export interface DummyDataValue {
 	readonly setDummyDataEnabled: (value: boolean) => void;
 }
 
-const DummyDataContext = createContext<DummyDataValue>({
+export const DummyDataContext = createContext<DummyDataValue>({
 	isDummyDataEnabled: false,
 	setDummyDataEnabled: () => {}
 });

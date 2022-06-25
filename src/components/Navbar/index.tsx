@@ -7,9 +7,14 @@ import {
 	Typography
 } from '@mui/material';
 import { useIsAuthenticated } from '../Authentication';
+import { DummyDataContext } from '../DummyData';
+import { ChangeEvent, useContext } from 'react';
 
 export const Navbar = () => {
 	const isAuthenticated = useIsAuthenticated();
+	const dummyData = useContext(DummyDataContext);
+	const setDummyDataEnabled = (event: ChangeEvent<HTMLInputElement>) =>
+		dummyData.setDummyDataEnabled(event.target.checked);
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static">
@@ -23,7 +28,13 @@ export const Navbar = () => {
 					</Typography>
 					{isAuthenticated && (
 						<FormControlLabel
-							control={<Switch color="secondary" />}
+							control={
+								<Switch
+									color="secondary"
+									value={dummyData.isDummyDataEnabled}
+									onChange={setDummyDataEnabled}
+								/>
+							}
 							label="Dummy Data"
 						/>
 					)}
