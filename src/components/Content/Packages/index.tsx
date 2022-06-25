@@ -1,21 +1,8 @@
-import { useContext } from 'react';
-import { AuthenticationContext } from '../../Authentication';
-import { useQuery } from 'react-query';
-import * as SendSafelyService from '../../../services/SendSafelyService';
-import { SendSafelyPackageResponse } from '../../../types/sendSafely';
 import { CircularProgress, Typography } from '@mui/material';
+import { useGetPackages } from './useGetPackages';
 
 export const Packages = () => {
-	const authentication = useContext(AuthenticationContext);
-	const { data, error, isLoading } = useQuery<
-		SendSafelyPackageResponse,
-		Error
-	>('sentPackages', () => SendSafelyService.getSentPackages(authentication), {
-		// TODO consider if I really want to disable these
-		refetchOnMount: false,
-		refetchOnWindowFocus: false,
-		refetchOnReconnect: false
-	});
+	const { data, error, isLoading } = useGetPackages();
 	return (
 		<div className="PackagesPage">
 			{isLoading && <CircularProgress />}
