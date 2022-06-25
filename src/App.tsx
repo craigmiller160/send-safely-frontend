@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { AuthenticationProvider } from './components/Authentication';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Content } from './components/Content';
+import { UseDummyDataProvider } from './components/DummyData';
 
 const queryClient = new QueryClient();
 
@@ -11,9 +12,11 @@ function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AuthenticationProvider>
-				<CssBaseline />
-				<Navbar />
-				<Content />
+				<UseDummyDataProvider>
+					<CssBaseline />
+					<Navbar />
+					<Content />
+				</UseDummyDataProvider>
 			</AuthenticationProvider>
 		</QueryClientProvider>
 	);
