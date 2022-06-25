@@ -52,6 +52,7 @@ const createMapPackage =
 	(
 		packageType: PackageType,
 		authentication: Authentication,
+		isDummyDataEnabled: boolean,
 		invalidateAndRefetch: () => void
 	) =>
 	(pkg: SendSafelyBasePackage): ReadonlyArray<string | ReactNode> => {
@@ -70,7 +71,11 @@ const createMapPackage =
 				).then(() => invalidateAndRefetch());
 			};
 
-			const DeleteButton = <Button onClick={doDelete}>Delete</Button>;
+			const DeleteButton = (
+				<Button disabled={isDummyDataEnabled} onClick={doDelete}>
+					Delete
+				</Button>
+			);
 			return [
 				...baseArray,
 				(pkg as SendSafelySentPackage).recipients.join(','),
@@ -114,8 +119,13 @@ export const useGetPackages = (
 
 	const mapPackage = useMemo(
 		() =>
-			createMapPackage(packageType, authentication, invalidateAndRefetch),
-		[packageType, invalidateAndRefetch, authentication]
+			createMapPackage(
+				packageType,
+				authentication,
+				isDummyDataEnabled,
+				invalidateAndRefetch
+			),
+		[packageType, invalidateAndRefetch, authentication, isDummyDataEnabled]
 	);
 
 	const formattedData = useMemo(
