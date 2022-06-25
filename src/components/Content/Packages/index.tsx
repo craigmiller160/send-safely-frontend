@@ -1,6 +1,7 @@
 import { CircularProgress, Typography } from '@mui/material';
 import { useGetPackages } from './useGetPackages';
 import { Table } from '../../ui/Table';
+import './Packages.scss';
 
 export const Packages = () => {
 	const { data, error, isLoading } = useGetPackages();
