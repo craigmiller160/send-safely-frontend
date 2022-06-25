@@ -1,5 +1,6 @@
 import { CircularProgress, Typography } from '@mui/material';
 import { useGetPackages } from './useGetPackages';
+import { Table } from '../../ui/Table';
 
 export const Packages = () => {
 	const { data, error, isLoading } = useGetPackages();
@@ -11,7 +12,7 @@ export const Packages = () => {
 					{error.message}
 				</Typography>
 			)}
-			{data ? <p>Data: {JSON.stringify(data, null, 2)}</p> : null}
+			{!isLoading && data && <Table data={data} />}
 		</div>
 	);
 };
