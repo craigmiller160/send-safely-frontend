@@ -2,7 +2,9 @@ import { useQuery } from 'react-query';
 import { SendSafelyPackageResponse } from '../../../types/sendSafely';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import { useContext, useMemo } from 'react';
-import { AuthenticationContext } from '../../Authentication';
+import { Authentication, AuthenticationContext } from '../../Authentication';
+import { PackageType } from './PackageType';
+import { match } from 'ts-pattern';
 
 interface GetPackagesResult {
 	readonly data: ReadonlyArray<ReadonlyArray<string>> | undefined;
@@ -10,17 +12,28 @@ interface GetPackagesResult {
 	readonly isLoading: boolean;
 }
 
-export const useGetPackages = (): GetPackagesResult => {
+type GetPackagesFn = (
+	auth: Authentication
+) => Promise<SendSafelyPackageResponse>;
+
+const getGetPackagesFn = (packageType: PackageType): GetPackagesFn =>
+	match(packageType)
+		.with(PackageType.SENT, () => SendSafelyService.getSentPackages)
+		.otherwise(() => SendSafelyService.getReceivedPackages);
+
+const getQueryKey = (packageType: PackageType): string =>
+	match(packageType)
+		.with(PackageType.SENT, () => 'sendPackages')
+		.otherwise(() => 'receivedPackages');
+
+export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
 	const { data, error, isLoading } = useQuery<
 		SendSafelyPackageResponse,
 		Error
-	>('sentPackages', () => SendSafelyService.getSentPackages(authentication), {
-		// TODO consider if I really want to disable these
-		refetchOnMount: false,
-		refetchOnWindowFocus: false,
-		refetchOnReconnect: false
-	});
+	>(getQueryKey(packageType), () =>
+		getGetPackagesFn(packageType)(authentication)
+	);
 
 	const formattedData = useMemo(
 		() =>
