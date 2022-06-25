@@ -28,8 +28,10 @@ export const Table = (props: Props) => {
 				<TableBody>
 					{props.data.map((record) => (
 						<TableRow key={`${record[props.rowKeyDataIndex]}`}>
-							{record.map((value) => (
-								<TableCell key={value}>{value}</TableCell>
+							{record.map((value, index) => (
+								<TableCell key={`${value}${index}`}>
+									{value}
+								</TableCell>
 							))}
 						</TableRow>
 					))}
