@@ -83,7 +83,6 @@ export const getReceivedPackages = (
 	);
 };
 
-// TODO make a useMutation
 export const deletePackage = (
 	authentication: Authentication,
 	packageId: string

@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from 'react-query';
+import { QueryFunction, useQuery, useQueryClient } from 'react-query';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import * as DummyDataService from '../../../services/DummyDataService';
 import { ReactNode, useCallback, useContext, useEffect, useMemo } from 'react';
@@ -12,6 +12,7 @@ import {
 } from '../../../types/sendSafely';
 import { DummyDataContext } from '../../DummyData';
 import { Button } from '@mui/material';
+import { GetPackagesQueryKey } from '../../../services/keys';
 
 interface GetPackagesResult {
 	readonly data: ReadonlyArray<ReadonlyArray<string | ReactNode>> | undefined;
@@ -19,15 +20,15 @@ interface GetPackagesResult {
 	readonly isLoading: boolean;
 }
 
-type GetPackagesFn = (
-	auth: Authentication,
-	page: number
-) => Promise<SendSafelyBasePackageResponse<any>>;
+type GetPackagesQueryFn = QueryFunction<
+	SendSafelyBasePackageResponse<any>,
+	GetPackagesQueryKey
+>;
 
 const getGetPackagesFn = (
 	packageType: PackageType,
 	isDummyDataEnabled: boolean
-): GetPackagesFn =>
+): GetPackagesQueryFn =>
 	match({ packageType, isDummyDataEnabled })
 		.with(
 			{ packageType: PackageType.SENT, isDummyDataEnabled: true },
@@ -87,7 +88,7 @@ const createMapPackage =
 
 export const useGetPackages = (
 	packageType: PackageType,
-	page: number // TODO ultimately gonna delete this
+	pageNumber: number // TODO ultimately gonna delete this
 ): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
 	const queryClient = useQueryClient();
@@ -95,14 +96,12 @@ export const useGetPackages = (
 	const queryKey = getQueryKey(packageType);
 	const { data, error, isLoading, refetch } = useQuery<
 		SendSafelyBasePackageResponse<any>,
-		Error
+		Error,
+		SendSafelyBasePackageResponse<any>,
+		GetPackagesQueryKey
 	>(
-		[queryKey, page],
-		() =>
-			getGetPackagesFn(packageType, isDummyDataEnabled)(
-				authentication,
-				page
-			),
+		[queryKey, { authentication, pageNumber }],
+		getGetPackagesFn(packageType, isDummyDataEnabled),
 		{
 			keepPreviousData: true
 		}
