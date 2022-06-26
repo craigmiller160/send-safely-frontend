@@ -64,7 +64,10 @@ export const authenticate = ({
 export const getSentPackages = (
 	ctx: QueryFunctionContext<GetPackagesQueryKey>
 ): Promise<SendSafelySentPackageResponse> => {
-	const [, { authentication, pageNumber }] = ctx.queryKey;
+	const {
+		queryKey: [, { authentication }],
+		pageParam: pageNumber = 0
+	} = ctx;
 	return baseSendSafelyRequest(
 		authentication,
 		`/api/v2.0/package?pageNumber=${pageNumber}&pageSize=10`,
@@ -75,7 +78,10 @@ export const getSentPackages = (
 export const getReceivedPackages = (
 	ctx: QueryFunctionContext<GetPackagesQueryKey>
 ): Promise<SendSafelyReceivedPackageResponse> => {
-	const [, { authentication, pageNumber }] = ctx.queryKey;
+	const {
+		queryKey: [, { authentication }],
+		pageParam: pageNumber = 0
+	} = ctx;
 	return baseSendSafelyRequest(
 		authentication,
 		`/api/v2.0/package/received?pageNumber=${pageNumber}&pageSize=10`,

@@ -100,7 +100,7 @@ export const useGetPackages = (
 		SendSafelyBasePackageResponse<any>,
 		GetPackagesQueryKey
 	>(
-		[queryKey, { authentication, pageNumber }],
+		[queryKey, { authentication }],
 		getGetPackagesFn(packageType, isDummyDataEnabled)
 	);
 

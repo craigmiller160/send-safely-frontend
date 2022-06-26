@@ -13,9 +13,9 @@ export {};
 const PAGE_SIZE = 10;
 
 export const getReceivedPackages = (
-	ctx: QueryFunctionContext<GetPackagesQueryKey>
+	ctx: QueryFunctionContext<GetPackagesQueryKey, number>
 ): Promise<SendSafelyReceivedPackageResponse> => {
-	const [, { pageNumber }] = ctx.queryKey;
+	const { pageParam: pageNumber = 0 } = ctx;
 	const packages = Array.from(new Array(PAGE_SIZE).keys()).map(
 		(index): SendSafelyReceivedPackage => ({
 			packageId: `Package-Id-${pageNumber}${index}`,
@@ -33,7 +33,7 @@ export const getReceivedPackages = (
 export const getSentPackages = (
 	ctx: QueryFunctionContext<GetPackagesQueryKey>
 ): Promise<SendSafelySentPackageResponse> => {
-	const [, { pageNumber }] = ctx.queryKey;
+	const { pageParam: pageNumber = 0 } = ctx;
 	const packages = Array.from(new Array(PAGE_SIZE).keys()).map(
 		(index): SendSafelySentPackage => ({
 			packageId: `Package-Id-${pageNumber}${index}`,
