@@ -13,7 +13,7 @@ import {
 	SendSafelySuccessResponse
 } from '../types/sendSafely';
 import { QueryFunctionContext } from 'react-query';
-import { GetPackagesQueryKey } from './keys';
+import { GetPackagesQueryKey, PaginatedResponse } from './types';
 
 const REQUEST_KEY_HEADER = 'ss-api-key';
 const REQUEST_TIMESTAMP_HEADER = 'ss-request-timestamp';
@@ -63,30 +63,36 @@ export const authenticate = ({
 
 export const getSentPackages = (
 	ctx: QueryFunctionContext<GetPackagesQueryKey>
-): Promise<SendSafelySentPackageResponse> => {
+): Promise<PaginatedResponse<SendSafelySentPackageResponse>> => {
 	const {
 		queryKey: [, { authentication }],
 		pageParam: pageNumber = 0
 	} = ctx;
-	return baseSendSafelyRequest(
+	return baseSendSafelyRequest<SendSafelySentPackageResponse>(
 		authentication,
 		`/api/v2.0/package?pageNumber=${pageNumber}&pageSize=10`,
 		'GET'
-	);
+	).then((data) => ({
+		data,
+		nextPage: pageNumber + 1
+	}));
 };
 
 export const getReceivedPackages = (
 	ctx: QueryFunctionContext<GetPackagesQueryKey>
-): Promise<SendSafelyReceivedPackageResponse> => {
+): Promise<PaginatedResponse<SendSafelyReceivedPackageResponse>> => {
 	const {
 		queryKey: [, { authentication }],
 		pageParam: pageNumber = 0
 	} = ctx;
-	return baseSendSafelyRequest(
+	return baseSendSafelyRequest<SendSafelyReceivedPackageResponse>(
 		authentication,
 		`/api/v2.0/package/received?pageNumber=${pageNumber}&pageSize=10`,
 		'GET'
-	);
+	).then((data) => ({
+		data,
+		nextPage: pageNumber + 1
+	}));
 };
 
 export const deletePackage = (

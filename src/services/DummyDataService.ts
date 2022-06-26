@@ -6,7 +6,7 @@ import {
 	SendSafelySentPackageResponse
 } from '../types/sendSafely';
 import { QueryFunctionContext } from 'react-query';
-import { GetPackagesQueryKey } from './keys';
+import { GetPackagesQueryKey, PaginatedResponse } from './types';
 
 export {};
 
@@ -14,7 +14,7 @@ const PAGE_SIZE = 10;
 
 export const getReceivedPackages = (
 	ctx: QueryFunctionContext<GetPackagesQueryKey, number>
-): Promise<SendSafelyReceivedPackageResponse> => {
+): Promise<PaginatedResponse<SendSafelyReceivedPackageResponse>> => {
 	const { pageParam: pageNumber = 0 } = ctx;
 	const packages = Array.from(new Array(PAGE_SIZE).keys()).map(
 		(index): SendSafelyReceivedPackage => ({
@@ -25,14 +25,17 @@ export const getReceivedPackages = (
 		})
 	);
 	return Promise.resolve({
-		response: SendSafelyResponseType.SUCCESS,
-		packages
+		data: {
+			response: SendSafelyResponseType.SUCCESS,
+			packages
+		},
+		nextPage: pageNumber + 1
 	});
 };
 
 export const getSentPackages = (
 	ctx: QueryFunctionContext<GetPackagesQueryKey>
-): Promise<SendSafelySentPackageResponse> => {
+): Promise<PaginatedResponse<SendSafelySentPackageResponse>> => {
 	const { pageParam: pageNumber = 0 } = ctx;
 	const packages = Array.from(new Array(PAGE_SIZE).keys()).map(
 		(index): SendSafelySentPackage => ({
@@ -44,7 +47,10 @@ export const getSentPackages = (
 		})
 	);
 	return Promise.resolve({
-		response: SendSafelyResponseType.SUCCESS,
-		packages
+		data: {
+			response: SendSafelyResponseType.SUCCESS,
+			packages
+		},
+		nextPage: pageNumber + 1
 	});
 };

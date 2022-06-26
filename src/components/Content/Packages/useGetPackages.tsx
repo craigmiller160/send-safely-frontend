@@ -12,7 +12,7 @@ import {
 } from '../../../types/sendSafely';
 import { DummyDataContext } from '../../DummyData';
 import { Button } from '@mui/material';
-import { GetPackagesQueryKey } from '../../../services/keys';
+import { GetPackagesQueryKey } from '../../../services/types';
 
 interface GetPackagesResult {
 	readonly data: ReadonlyArray<ReadonlyArray<string | ReactNode>> | undefined;
