@@ -12,6 +12,8 @@ Normally I would NEVER store authentication values in local storage. However, if
 
 ## Dummy Data
 
+The infinite scroll loading requirement 
+
 To help with validating the pagination requirement of the exercise, I have built in a dummy data mode. Once authenticated, there will be a switch in the top right corner of the UI to enable it. This guarantees the presence of enough data to validate the scrolling pagination.
 
 When dummy data is not enabled, of course, the app will query the SendSafely API.

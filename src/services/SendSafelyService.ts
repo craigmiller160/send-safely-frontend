@@ -68,9 +68,10 @@ export const getSentPackages = (
 		queryKey: [, { authentication }],
 		pageParam: pageNumber = 0
 	} = ctx;
+	const rowIndex = pageNumber * 10;
 	return baseSendSafelyRequest<SendSafelySentPackageResponse>(
 		authentication,
-		`/api/v2.0/package?pageNumber=${pageNumber}&pageSize=10`,
+		`/api/v2.0/package?rowIndex=${rowIndex}&pageSize=10`,
 		'GET'
 	).then((data) => ({
 		data,
@@ -85,9 +86,10 @@ export const getReceivedPackages = (
 		queryKey: [, { authentication }],
 		pageParam: pageNumber = 0
 	} = ctx;
+	const rowIndex = pageNumber * 10;
 	return baseSendSafelyRequest<SendSafelyReceivedPackageResponse>(
 		authentication,
-		`/api/v2.0/package/received?pageNumber=${pageNumber}&pageSize=10`,
+		`/api/v2.0/package/received?rowIndex=${rowIndex}&pageSize=10`,
 		'GET'
 	).then((data) => ({
 		data,
