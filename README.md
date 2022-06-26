@@ -8,7 +8,13 @@ To accomplish secure communication with the SendSafely REST API, it appears I ne
 
 ## A Note About Local Storage
 
-Normally I would NEVER store authentication values in local storage. However, if a particular environment variable is set at startup, then the authentication values are indeed placed into local storage. This was to better support iterative development because I just didn't want to have to keep entering my username/password over and over again.
+Normally I would NEVER store authentication values in local storage. However, I would also normally handle authentication via a same-site cookie, but this is a demo project. Anyway, to avoid having to login every time the page refreshes, simply add a file called `.env` to the root of the project with the following contents and the authentication details will be saved in localStorage:
+
+```
+REACT_APP_LOCAL_STORAGE=true
+```
+
+Without this, the authentication details will be wiped every time the browser refreshes.
 
 ## Dummy Data
 
