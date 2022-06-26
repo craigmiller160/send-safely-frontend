@@ -101,10 +101,7 @@ export const useGetPackages = (
 		GetPackagesQueryKey
 	>(
 		[queryKey, { authentication, pageNumber }],
-		getGetPackagesFn(packageType, isDummyDataEnabled),
-		{
-			keepPreviousData: true
-		}
+		getGetPackagesFn(packageType, isDummyDataEnabled)
 	);
 
 	const invalidateAndRefetch = useCallback(
