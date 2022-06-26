@@ -12,7 +12,10 @@ import {
 } from '../../../types/sendSafely';
 import { DummyDataContext } from '../../DummyData';
 import { Button } from '@mui/material';
-import { GetPackagesQueryKey } from '../../../services/types';
+import {
+	GetPackagesQueryKey,
+	PaginatedResponse
+} from '../../../services/types';
 
 interface GetPackagesResult {
 	readonly data: ReadonlyArray<ReadonlyArray<string | ReactNode>> | undefined;
@@ -20,10 +23,9 @@ interface GetPackagesResult {
 	readonly isLoading: boolean;
 }
 
-type GetPackagesQueryFn = QueryFunction<
-	SendSafelyBasePackageResponse<any>,
-	GetPackagesQueryKey
->;
+type ResponseType = PaginatedResponse<SendSafelyBasePackageResponse<any>>;
+
+type GetPackagesQueryFn = QueryFunction<ResponseType, GetPackagesQueryKey>;
 
 const getGetPackagesFn = (
 	packageType: PackageType,
@@ -95,9 +97,9 @@ export const useGetPackages = (
 	const isDummyDataEnabled = useContext(DummyDataContext).isDummyDataEnabled;
 	const queryKey = getQueryKey(packageType);
 	const { data, error, isLoading, refetch } = useQuery<
-		SendSafelyBasePackageResponse<any>,
+		ResponseType,
 		Error,
-		SendSafelyBasePackageResponse<any>,
+		ResponseType,
 		GetPackagesQueryKey
 	>(
 		[queryKey, { authentication }],
@@ -125,7 +127,7 @@ export const useGetPackages = (
 	);
 
 	const formattedData = useMemo(
-		() => data?.packages?.map(mapPackage),
+		() => data?.data?.packages?.map(mapPackage),
 		[data, mapPackage]
 	);
 	return {
