@@ -87,7 +87,7 @@ const createMapPackage =
 
 export const useGetPackages = (
 	packageType: PackageType,
-	page: number
+	page: number // TODO ultimately gonna delete this
 ): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
 	const queryClient = useQueryClient();

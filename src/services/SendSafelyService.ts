@@ -12,6 +12,8 @@ import {
 	SendSafelySentPackageResponse,
 	SendSafelySuccessResponse
 } from '../types/sendSafely';
+import { QueryFunctionContext } from 'react-query';
+import { GetPackagesQueryKey } from './keys';
 
 const REQUEST_KEY_HEADER = 'ss-api-key';
 const REQUEST_TIMESTAMP_HEADER = 'ss-request-timestamp';
@@ -60,25 +62,28 @@ export const authenticate = ({
 		.then((data) => handleSendSafelyResponse<SendSafelyAuthResponse>(data));
 
 export const getSentPackages = (
-	authentication: Authentication,
-	pageNumber: number = 0
-): Promise<SendSafelySentPackageResponse> =>
-	baseSendSafelyRequest(
+	ctx: QueryFunctionContext<GetPackagesQueryKey>
+): Promise<SendSafelySentPackageResponse> => {
+	const [, { authentication, pageNumber }] = ctx.queryKey;
+	return baseSendSafelyRequest(
 		authentication,
 		`/api/v2.0/package?pageNumber=${pageNumber}&pageSize=10`,
 		'GET'
 	);
+};
 
 export const getReceivedPackages = (
-	authentication: Authentication,
-	pageNumber: number = 0
-): Promise<SendSafelyReceivedPackageResponse> =>
-	baseSendSafelyRequest(
+	ctx: QueryFunctionContext<GetPackagesQueryKey>
+): Promise<SendSafelyReceivedPackageResponse> => {
+	const [, { authentication, pageNumber }] = ctx.queryKey;
+	return baseSendSafelyRequest(
 		authentication,
 		`/api/v2.0/package/received?pageNumber=${pageNumber}&pageSize=10`,
 		'GET'
 	);
+};
 
+// TODO make a useMutation
 export const deletePackage = (
 	authentication: Authentication,
 	packageId: string

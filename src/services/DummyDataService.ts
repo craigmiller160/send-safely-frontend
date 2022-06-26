@@ -1,4 +1,3 @@
-import { Authentication } from '../components/Authentication';
 import {
 	SendSafelyReceivedPackage,
 	SendSafelyReceivedPackageResponse,
@@ -6,15 +5,17 @@ import {
 	SendSafelySentPackage,
 	SendSafelySentPackageResponse
 } from '../types/sendSafely';
+import { QueryFunctionContext } from 'react-query';
+import { GetPackagesQueryKey } from './keys';
 
 export {};
 
 const PAGE_SIZE = 10;
 
 export const getReceivedPackages = (
-	authentication: Authentication,
-	pageNumber: number = 0
+	ctx: QueryFunctionContext<GetPackagesQueryKey>
 ): Promise<SendSafelyReceivedPackageResponse> => {
+	const [, { pageNumber }] = ctx.queryKey;
 	const packages = Array.from(new Array(PAGE_SIZE).keys()).map(
 		(index): SendSafelyReceivedPackage => ({
 			packageId: `Package-Id-${pageNumber}${index}`,
@@ -30,9 +31,9 @@ export const getReceivedPackages = (
 };
 
 export const getSentPackages = (
-	authentication: Authentication,
-	pageNumber: number = 0
+	ctx: QueryFunctionContext<GetPackagesQueryKey>
 ): Promise<SendSafelySentPackageResponse> => {
+	const [, { pageNumber }] = ctx.queryKey;
 	const packages = Array.from(new Array(PAGE_SIZE).keys()).map(
 		(index): SendSafelySentPackage => ({
 			packageId: `Package-Id-${pageNumber}${index}`,
