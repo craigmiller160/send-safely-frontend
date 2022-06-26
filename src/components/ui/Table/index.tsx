@@ -23,6 +23,7 @@ const createScrollListener =
 			event.currentTarget.scrollTop + event.currentTarget.clientHeight ===
 			event.currentTarget.scrollHeight
 		) {
+			console.log('Callback');
 			callback();
 		}
 	};

@@ -3,9 +3,6 @@ import { useGetPackages } from './useGetPackages';
 import { Table } from '../../ui/Table';
 import { PackageType } from './PackageType';
 import { match } from 'ts-pattern';
-import { useContext, useEffect } from 'react';
-import { DummyDataContext } from '../../DummyData';
-import { useImmer } from 'use-immer';
 
 const BASE_COLUMNS = ['Package ID', 'Sender', 'Timestamp', 'Filenames'];
 const RECEIVED_COLUMNS = [...BASE_COLUMNS];
@@ -25,33 +22,12 @@ const getColumns = (packageType: PackageType): ReadonlyArray<string> =>
 		.with(PackageType.SENT, () => SENT_COLUMNS)
 		.otherwise(() => RECEIVED_COLUMNS);
 
-interface State {
-	readonly page: number;
-}
-
 export const PackagesTable = (props: Props) => {
-	const [state, setState] = useImmer<State>({
-		page: 0
-	});
-	const isDummyDataEnabled = useContext(DummyDataContext).isDummyDataEnabled;
-	const { data, error, isLoading } = useGetPackages(
-		props.packageType,
-		state.page
+	const { data, error, isLoading, fetchNextPage } = useGetPackages(
+		props.packageType
 	);
 	const title = getTableTitle(props.packageType);
 	const columns = getColumns(props.packageType);
-
-	useEffect(() => {
-		// Reset to page 0 if the toggle is flipped
-		setState({
-			page: 0
-		});
-	}, [isDummyDataEnabled, setState]);
-
-	const nextPage = () =>
-		setState((draft) => {
-			draft.page = draft.page + 1;
-		});
 
 	return (
 		<div className="PackagesTable">
@@ -67,7 +43,7 @@ export const PackagesTable = (props: Props) => {
 					columns={columns}
 					data={data}
 					rowKeyDataIndex={0}
-					nextPage={nextPage}
+					nextPage={fetchNextPage}
 				/>
 			)}
 		</div>

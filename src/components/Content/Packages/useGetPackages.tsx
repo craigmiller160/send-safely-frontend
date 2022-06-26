@@ -20,7 +20,8 @@ import {
 interface GetPackagesResult {
 	readonly data: ReadonlyArray<ReadonlyArray<string | ReactNode>> | undefined;
 	readonly error: Error | null;
-	readonly isLoading: boolean;
+	readonly isLoading: boolean; // TODO integrate isFetching
+	readonly fetchNextPage: () => Promise<unknown>;
 }
 
 type ResponseType = PaginatedResponse<SendSafelyBasePackageResponse<any>>;
@@ -88,22 +89,22 @@ const createMapPackage =
 		return baseArray;
 	};
 
-export const useGetPackages = (
-	packageType: PackageType,
-	pageNumber: number // TODO ultimately gonna delete this
-): GetPackagesResult => {
+export const useGetPackages = (packageType: PackageType): GetPackagesResult => {
 	const authentication = useContext(AuthenticationContext);
 	const queryClient = useQueryClient();
 	const isDummyDataEnabled = useContext(DummyDataContext).isDummyDataEnabled;
 	const queryKey = getQueryKey(packageType);
-	const { data, error, isLoading, refetch } = useInfiniteQuery<
+	const { data, error, isLoading, refetch, fetchNextPage } = useInfiniteQuery<
 		ResponseType,
 		Error,
 		ResponseType,
 		GetPackagesQueryKey
 	>(
 		[queryKey, { authentication }],
-		getGetPackagesFn(packageType, isDummyDataEnabled)
+		getGetPackagesFn(packageType, isDummyDataEnabled),
+		{
+			getNextPageParam: (lastPage) => lastPage.nextPage
+		}
 	);
 
 	const invalidateAndRefetch = useCallback(
@@ -134,6 +135,7 @@ export const useGetPackages = (
 	return {
 		data: formattedData,
 		error,
-		isLoading
+		isLoading,
+		fetchNextPage
 	};
 };
