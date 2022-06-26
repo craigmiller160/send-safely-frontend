@@ -4,7 +4,7 @@ This is the frontend coding assessment for Craig Miller's interview with Send Sa
 
 ## How to Run
 
-Install all dependencies and then use the `start` script via the `package.json`.
+Install all dependencies and then use the `start` script via the `package.json`. It will run on port `3003`.
 
 ## A Note About Bundle Size
 
