@@ -16,14 +16,13 @@ interface Props {
 	readonly nextPage: () => void;
 }
 
+const isAtBottomOfViewport = (target: EventTarget & HTMLDivElement): boolean =>
+	Math.round(target.scrollTop) + Math.round(target.clientHeight) >=
+	Math.round(target.scrollHeight);
+
 const createScrollListener =
 	(callback: () => void) => (event: UIEvent<HTMLDivElement>) => {
-		// This means we're at the bottom of the viewport
-		if (
-			event.currentTarget.scrollTop + event.currentTarget.clientHeight ===
-			event.currentTarget.scrollHeight
-		) {
-			console.log('Callback');
+		if (isAtBottomOfViewport(event.currentTarget)) {
 			callback();
 		}
 	};
