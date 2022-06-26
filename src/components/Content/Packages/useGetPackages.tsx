@@ -1,4 +1,4 @@
-import { QueryFunction, useQuery, useQueryClient } from 'react-query';
+import { QueryFunction, useInfiniteQuery, useQueryClient } from 'react-query';
 import * as SendSafelyService from '../../../services/SendSafelyService';
 import * as DummyDataService from '../../../services/DummyDataService';
 import { ReactNode, useCallback, useContext, useEffect, useMemo } from 'react';
@@ -96,7 +96,7 @@ export const useGetPackages = (
 	const queryClient = useQueryClient();
 	const isDummyDataEnabled = useContext(DummyDataContext).isDummyDataEnabled;
 	const queryKey = getQueryKey(packageType);
-	const { data, error, isLoading, refetch } = useQuery<
+	const { data, error, isLoading, refetch } = useInfiniteQuery<
 		ResponseType,
 		Error,
 		ResponseType,
@@ -127,7 +127,8 @@ export const useGetPackages = (
 	);
 
 	const formattedData = useMemo(
-		() => data?.data?.packages?.map(mapPackage),
+		() =>
+			data?.pages?.flatMap((page) => page.data.packages).map(mapPackage),
 		[data, mapPackage]
 	);
 	return {
